@@ -1,1 +1,2 @@
-# Computer_graphics_lab_excercises_projects
+# Computer graphics lab excercises and projects
+## Computer graphics using OpenGL
