@@ -50,6 +50,21 @@ def draw():
     glVertex(p1)
     glEnd()
     draw_rectangle()
+    """Try to program this in PyOpenGL. Start with the basic.py file and follow the instructions.
+1. Create a numpy vector that contains [0.3, 0.4]
+2. Create a point with numpy that is (0.1, 0.2)
+3. Calculate P using P = Po + tV with t = 1
+4. Draw the line with PyOpenGL
+5. Recalculate and draw the line with t = 0.5 and t = 1.2 and see the difference
+6. Draw a grid line X-Axis and Y-Axis with different color"""
+    # v = np.array([0.3, 0.4])
+    # po = np.array((0.1, 0.2))
+    # p = np.add(po, v)  # when t =1
+    # glColor3f(0.0, 0.0, 1.0)
+    # glBegin(GL_LINES)
+    # glVertex(po)
+    # glVertex(p)
+    # glEnd()
     glFlush()
 
 
