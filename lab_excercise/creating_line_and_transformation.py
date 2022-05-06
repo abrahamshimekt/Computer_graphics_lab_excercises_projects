@@ -5,6 +5,7 @@ from pygame.locals import *
 import numpy as np
 
 
+# absalat.dawit@aait.edu.et
 def init():
     pygame.init()
     display = (500, 500)
@@ -17,16 +18,32 @@ def init():
 
 
 def draw_rectangle():
-    v1 = np.array([0.3, 0.2])
-    v2 = np.array([0.3, -0.2])
-    v3 = np.array([-0.3, -0.2])
-    v4 = np.array([-0.3, 0.2])
+    # v1 = np.array([0.3, 0.2])
+    po = np.array((0.3, 0.2))
+    # v2 = np.array([0.3, -0.2])
+    v1 = np.array([0.0, -0.4])
+    hr = np.add(po, v1)
+    # v3 = np.array([-0.3, -0.2])
+    p1 = np.array((0.3, -0.2))
+    v2 = np.array([-0.6, 0.0])
+    wb = np.add(p1, v2)
+    p2 = np.array((-0.3, -0.2))
+    v3 = np.array([0.0, 0.4])
+    hl = np.add(p2, v3)
+    p3 = np.array((-0.3, 0.2))
+    v4 = np.array([0.6, 0.0])
+    wt = np.add(p3, v4)
+    # v4 = np.array([-0.3, 0.2])
     glColor3f(1.0, 0.0, 0.0)
     glBegin(GL_LINE_LOOP)
-    glVertex(v1)
-    glVertex(v2)
-    glVertex(v3)
-    glVertex(v4)
+    glVertex(po)
+    glVertex(hr)
+    glVertex(p1)
+    glVertex(wb)
+    glVertex(p2)
+    glVertex(hl)
+    glVertex(p3)
+    glVertex(wt)
     glEnd()
 
 
@@ -57,14 +74,14 @@ def draw():
 4. Draw the line with PyOpenGL
 5. Recalculate and draw the line with t = 0.5 and t = 1.2 and see the difference
 6. Draw a grid line X-Axis and Y-Axis with different color"""
-    # v = np.array([0.3, 0.4])
-    # po = np.array((0.1, 0.2))
-    # p = np.add(po, v)  # when t =1
-    # glColor3f(0.0, 0.0, 1.0)
-    # glBegin(GL_LINES)
-    # glVertex(po)
-    # glVertex(p)
-    # glEnd()
+    v = np.array([0.3, 0.4])
+    po = np.array((0.1, 0.2))
+    p = np.add(po, v)  # when t =1
+    glColor3f(0.0, 0.0, 1.0)
+    glBegin(GL_LINES)
+    glVertex(po)
+    glVertex(p)
+    glEnd()
     glFlush()
 
 
