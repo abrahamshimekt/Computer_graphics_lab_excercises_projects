@@ -17,13 +17,16 @@ def init():
 """drawing rectangle width 0.6 and height 0.4"""
 
 
+def rotation_matrix(degree):
+    radian = degree * np.pi / 180
+    mat = np.array([[np.cos(radian), -1 * np.sin(radian)], [np.sin(radian), np.cos(radian)]])
+    return mat
+
+
 def draw_rectangle():
-    # v1 = np.array([0.3, 0.2])
     po = np.array((0.3, 0.2))
-    # v2 = np.array([0.3, -0.2])
     v1 = np.array([0.0, -0.4])
     hr = np.add(po, v1)
-    # v3 = np.array([-0.3, -0.2])
     p1 = np.array((0.3, -0.2))
     v2 = np.array([-0.6, 0.0])
     wb = np.add(p1, v2)
@@ -33,7 +36,6 @@ def draw_rectangle():
     p3 = np.array((-0.3, 0.2))
     v4 = np.array([0.6, 0.0])
     wt = np.add(p3, v4)
-    # v4 = np.array([-0.3, 0.2])
     glColor3f(1.0, 0.0, 0.0)
     glBegin(GL_LINE_LOOP)
     glVertex(po)
@@ -45,6 +47,20 @@ def draw_rectangle():
     glVertex(p3)
     glVertex(wt)
     glEnd()
+    # rotated rectangle
+    mat = rotation_matrix(60)
+    new_hr = np.dot(hr, mat)
+    new_wb = np.dot(wb, mat)
+    new_hl = np.dot(hl, mat)
+    new_wt = np.dot(wt, mat)
+    glColor3f(0.0, 1.0, 0.0)
+    glBegin(GL_LINE_LOOP)
+    glVertex(new_hr)
+    glVertex(new_wb)
+    glVertex(new_hl)
+    glVertex(new_wt)
+    glEnd()
+    # translated rectangle
 
 
 def draw():
