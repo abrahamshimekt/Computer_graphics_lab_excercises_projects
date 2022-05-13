@@ -85,7 +85,7 @@ edges = (
 
 def cube():
     glRotatef(1, 3, 1, 1)
-    glBegin(GL_POLYGON)
+    glBegin(GL_LINES)
     for edge in edges:
         for vertex in edge:
             glColor3f(vertex, 0.0, 1.0)  # colors the edge cube, blue
@@ -98,7 +98,7 @@ def cube():
 
 def translated_cub():
     glRotatef(1, 3, 1, 1)
-    glBegin(GL_POLYGON)
+    glBegin(GL_LINES)
     for edge in edges:
         for vertex in edge:
             glColor3f(vertex, 1.0, 0.0)  # colors the edge cube ,yellow
