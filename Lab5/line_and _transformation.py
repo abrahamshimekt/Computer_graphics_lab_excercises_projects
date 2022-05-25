@@ -5,7 +5,6 @@ from pygame.locals import *
 import numpy as np
 
 
-
 def init():
     pygame.init()
     display = (500, 500)
