@@ -33,17 +33,40 @@ def init():
     glAttachShader(program, fragmentShader)
     glLinkProgram(program)
 
-    vertices = np.array(
-        [0.5, 0.5, 0.0,0.0, 1.0, 0.0,
-         0.5,-0.5, 0.0,0.0, 1.0, 0.0,
-         -0.5, 0.5,0.0, 0.0, 1.0, 0.0,
-         0.5, -0.5, 0.0,0.0, 1.0, 0.0,
-         - 0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
-         - 0.5, 0.5, 0.0,0.0, 1.0, 0.0],
-        dtype=np.float32)
+    # vertices = np.array(
+    #     [0.5, 0.5, 0.0,0.0, 1.0, 0.0,
+    #      0.5,-0.5, 0.0,0.0, 1.0, 0.0,
+    #      -0.5, 0.5,0.0, 0.0, 1.0, 0.0,
+    #      0.5, -0.5, 0.0,0.0, 1.0, 0.0,
+    #      - 0.5, -0.5, 0.0, 0.0, 1.0, 0.0,
+    #      - 0.5, 0.5, 0.0,0.0, 1.0, 0.0],
+    #     dtype=np.float32)
+    vertices = [0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
+                0.5, -0.5, 0.0, 0.0, 0.0, 1.0,
+                -0.5, -0.5, 0.0, 0.0, 0.0, 1.0,
+                -0.5, 0.5, 0.0, 0.0, 0.0, 1.0, ]
+
+    indices = [0, 1, 3,
+               1, 2, 3, ]
+    # VBO = glGenBuffers(1)
+    # glBindBuffer(GL_ARRAY_BUFFER, VBO)
+    # glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+    #
+    # glEnableVertexAttribArray(0)
+    # glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
+    #
+    # glEnableVertexAttribArray(1)
+    # glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
+    vertices = np.array(vertices, dtype=np.float32)
+    indices = np.array(indices, dtype=np.uint32)
+
     VBO = glGenBuffers(1)
     glBindBuffer(GL_ARRAY_BUFFER, VBO)
     glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+
+    EBO = glGenBuffers(1)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO)
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL_STATIC_DRAW)
 
     glEnableVertexAttribArray(0)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
@@ -56,7 +79,8 @@ def draw():
     glClear(GL_COLOR_BUFFER_BIT)
     glUseProgram(program)
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-    glDrawArrays(GL_TRIANGLES, 0, 6)
+    # glDrawArrays(GL_TRIANGLES, 0, 6)
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
 
 def main():
     init()
