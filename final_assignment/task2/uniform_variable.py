@@ -71,6 +71,7 @@ def draw():
     glBindVertexArray(VAO)
     rot_x = rotationMatrix(20 * time.time())
     rotateMatLocation = glGetUniformLocation(program, "transform")
+    # rotateMat = rotationMatrix(30)
     # rotateMat = rotationMatrix(-30)
     glUniformMatrix4fv(rotateMatLocation, 1, GL_FALSE, rot_x)
     glDrawArrays(GL_TRIANGLES, 0, 3)

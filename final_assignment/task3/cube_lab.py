@@ -4,30 +4,32 @@ from pygame.locals import *
 from OpenGL.GL.shaders import *
 import numpy as np
 import os
-from PIL import Image
+import time
+import pyrr
 
-vao, program, texture = None, None, None
+vao, program, rotation_loc = None, None, None
 
 
 def getFileContents(filename):
     p = os.path.join(os.getcwd(), "shaders", filename)
     return open(p, 'r').read()
-
 def rotationMatrix(degree):
     radian = degree * np.pi / 180.0
     mat = np.array([
         [np.cos(radian), -np.sin(radian), 0.0, 0.0],
-        [np.sin(radian), np.cos(radian), 0.0, 0.0],
-        [0.0, 0.0, 1.0, 0.0],
+        [np.sin(radian), np.cos(radian), 0.0, 0.6],
+        [0.0, 0.0, 1.0, 0.4],
         [0.0, 0.0, 0.0, 1.0]
     ], dtype=np.float32)
+
     return mat
+
 def init():
-    global vao, program, texture
+    global vao, program ,rotation_loc
     pygame.init()
-    display = (500, 500)
+    display = (700, 500)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-    glClearColor(.30, 0.20, 0.20, 1.0)
+    glClearColor(1.0, 1.0, 1.0, 1.0)
     glViewport(0, 0, 500, 500)
 
     vertexShader = compileShader(getFileContents(
@@ -41,14 +43,55 @@ def init():
     glLinkProgram(program)
 
     vertexes = np.array([
-        # position          # color
-        [0.5, 0.5, -.50, 1.0, 0.20, 0.8],
-        [0.5, -0.5, -.50, 1.0, 1.0, 0.0],
-        [-0.5, 0.5, -.50, 0.0, 0.7, 0.2],
+        # bottom face
+        -0.5, -0.5, -0.5, 1.0, 0.0,0.0,
+        0.5, -0.5, -0.5, 1.0, 0.0,0.0,
+        0.5, 0.5, -0.5, 1.0, 0.0,0.0,
 
-        [0.5, -0.5, -.50, 1.0, 1.0, 0.0],
-        [-0.5, -0.5, -.50, 0.0, 0.4, 1.0],
-        [-0.5, 0.5, -.50, 0.0, 0.7, 0.2],
+        0.5, 0.5, -0.5, 1.0, 0.0,0.0,
+        -0.5, 0.5, -0.5, 1.0, 0.0,0.0,
+        -0.5, -0.5, -0.5, 1.0, 0.0,0.0,
+        # top face
+        -0.5, -0.5, 0.5, 1.0, 1.0,0.0,
+        0.5, -0.5, 0.5, 1.0, 1.0,0.0,
+        0.5, 0.5, 0.5, 1.0, 1.0,0.0,
+
+        0.5, 0.5, 0.5, 1.0, 1.0,0.0,
+        -0.5, 0.5, 0.5, 1.0, 1.0,0.0,
+        -0.5, -0.5, 0.5, 1.0, 1.0,0.0,
+        # back face
+        -0.5, 0.5, 0.5, .0, 1.0,0.0,
+        -0.5, 0.5, -0.5, .0, 1.0,0.0,
+        -0.5, -0.5, -0.5, .0, 1.0,0.0,
+
+        -0.5, -0.5, -0.5, .0, 1.0,0.0,
+        -0.5, -0.5, 0.5, .0, 1.0,0.0,
+        -0.5, 0.5, 0.5, .0, 1.0,0.0,
+        # front face
+        0.5, 0.5, 0.5, 0.0, 0.0,0.0,
+        0.5, 0.5, -0.5, 0.0, 0.0,0.0,
+        0.5, -0.5, -0.5, 0.0, 0.0,0.0,
+
+        0.5, -0.5, -0.5, 0.0, 0.0,0.0,
+        0.5, -0.5, 0.5, 0.0, 0.0,0.0,
+        0.5, 0.5, 0.5, 0.0, 0.0,0.0,
+        # left face
+        -0.5, -0.5, -0.5, 0.0, 0.0,1.0,
+        0.5, -0.5, -0.5,  0.0, 0.0,1.0,
+        0.5, -0.5, 0.5,  0.0, 0.0,1.0,
+
+        0.5, -0.5, 0.5,  0.0, 0.0,1.0,
+        -0.5, -0.5, 0.5,  0.0, 0.0,1.0,
+        -0.5, -0.5, -0.5,  0.0, 0.0,1.0,
+        # right face
+        -0.5, 0.5, -0.5,  1.0, 0.0,1.0,
+        0.5, 0.5, -0.5,  1.0, 0.0,1.0,
+        0.5, 0.5, 0.5,  1.0, 0.0,1.0,
+
+        0.5, 0.5, 0.5, 1.0, 0.0, 1.0,
+        -0.5, 0.5, 0.5, 1.0, 0.0, 1.0,
+        -0.5, 0.5, -0.5, 1.0, 0.0, 1.0,
+
 
     ], dtype=np.float32)
 
@@ -67,28 +110,22 @@ def init():
 
     colorLocation = glGetAttribLocation(program, "color")
     glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE,
-                          6 * vertexes.itemsize, ctypes.c_void_p(12))
+                          6* vertexes.itemsize, ctypes.c_void_p(12))
     glEnableVertexAttribArray(colorLocation)
-
-    # unbind VBO
-    glBindBuffer(GL_ARRAY_BUFFER, 0)
-    # unbind VAO
-    glBindVertexArray(0)
-
-    # glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-
+    rotation_loc = glGetUniformLocation(program, "rotation")
 
 def draw():
-    global vao, program, texture
+    global vao, program ,rotation_loc
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glEnable(GL_DEPTH_TEST)
-    glDepthFunc(GL_LESS)
     glUseProgram(program)
+    glEnable(GL_DEPTH_TEST)
     glBindVertexArray(vao)
-
-    glDrawArrays(GL_TRIANGLES, 0, 6)
-
-    glBindVertexArray(0)
+    rotation_loc = glGetUniformLocation(program, "rotation")
+    # rotation = rotationMatrix(30)
+    rot_x =rotationMatrix(15 * time.time())
+    rot_y = rotationMatrix(10 * time.time())
+    glUniformMatrix4fv(rotation_loc, 1, GL_FALSE, pyrr.matrix44.multiply( rot_x,rot_y))
+    glDrawArrays(GL_TRIANGLES, 0, 36)
 
 
 def main():
