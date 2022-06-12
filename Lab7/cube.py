@@ -24,9 +24,9 @@ def init():
     glViewport(0, 0, 500, 500)
 
     vertexShader = compileShader(getFileContents(
-        "triangle.vertex.shader"), GL_VERTEX_SHADER)
+        "cube.vertex.shader"), GL_VERTEX_SHADER)
     fragmentShader = compileShader(getFileContents(
-        "triangle.fragment.shader"), GL_FRAGMENT_SHADER)
+        "cube.fragment.shader"), GL_FRAGMENT_SHADER)
 
     program = glCreateProgram()
     glAttachShader(program, vertexShader)

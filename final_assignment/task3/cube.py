@@ -1,5 +1,6 @@
 import pygame
 from OpenGL.GL import *
+from OpenGL.GLU import *
 from pygame.locals import *
 from OpenGL.GL.shaders import *
 import numpy as np
@@ -7,12 +8,13 @@ import os
 import time
 import pyrr
 
-vao, program, rotation_loc = None, None, None
+VAO, program, = None, None
 
 
 def getFileContents(filename):
     p = os.path.join(os.getcwd(), "shaders", filename)
     return open(p, 'r').read()
+
 def rotationMatrix(degree):
     radian = degree * np.pi / 180.0
     mat = np.array([
@@ -21,27 +23,28 @@ def rotationMatrix(degree):
         [0.0, 0.0, 1.0, 0.4],
         [0.0, 0.0, 0.0, 1.0]
     ], dtype=np.float32)
-
     return mat
 
 def init():
-    global vao, program ,rotation_loc
+    global VAO, program
     pygame.init()
-    display = (700, 500)
+    display = (500, 500)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     glClearColor(1.0, 1.0, 1.0, 1.0)
-    glViewport(0, 0, 500, 500)
+    gluOrtho2D(-10.0, 10.0, -10.0, 10.0)
+
 
     vertexShader = compileShader(getFileContents(
-        "triangle.vertex.shader"), GL_VERTEX_SHADER)
+        "cube.vertex.shader"), GL_VERTEX_SHADER)
     fragmentShader = compileShader(getFileContents(
-        "triangle.fragment.shader"), GL_FRAGMENT_SHADER)
+        "cube.fragment.shader"), GL_FRAGMENT_SHADER)
 
     program = glCreateProgram()
     glAttachShader(program, vertexShader)
     glAttachShader(program, fragmentShader)
     glLinkProgram(program)
 
+    # 36 vertices and 12 triangles to draw cube
     vertexes = np.array([
         # bottom face
         -0.5, -0.5, -0.5, 1.0, 0.0,0.0,
@@ -95,36 +98,39 @@ def init():
 
     ], dtype=np.float32)
 
-    vao = glGenVertexArrays(1)
-    vbo = glGenBuffers(1)
+    VAO = glGenVertexArrays(1)
+    VBO = glGenBuffers(1)
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo)
-
+    glBindBuffer(GL_ARRAY_BUFFER, VBO)
     glBufferData(GL_ARRAY_BUFFER, vertexes.nbytes, vertexes, GL_STATIC_DRAW)
-    glBindVertexArray(vao)
+    glBindVertexArray(VAO)
 
-    positionLocation = glGetAttribLocation(program, "position")
-    glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE,
+    position= glGetAttribLocation(program, "position")
+    glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE,
                           6 * vertexes.itemsize, ctypes.c_void_p(0))
-    glEnableVertexAttribArray(positionLocation)
+    glEnableVertexAttribArray(position)
 
-    colorLocation = glGetAttribLocation(program, "color")
-    glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE,
+    color = glGetAttribLocation(program, "color")
+    glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE,
                           6* vertexes.itemsize, ctypes.c_void_p(12))
-    glEnableVertexAttribArray(colorLocation)
-    rotation_loc = glGetUniformLocation(program, "rotation")
+    glEnableVertexAttribArray(color)
 
 def draw():
-    global vao, program ,rotation_loc
+    global VAO, program
+    # enable clearing depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glUseProgram(program)
+    # enable depth test
     glEnable(GL_DEPTH_TEST)
-    glBindVertexArray(vao)
-    rotation_loc = glGetUniformLocation(program, "rotation")
+    # apply depth checking function
+    glDepthFunc(GL_LESS)
+    glBindVertexArray(VAO)
+
+    rotation = glGetUniformLocation(program, "transform")
     # rotation = rotationMatrix(30)
-    rot_x =rotationMatrix(15 * time.time())
-    rot_y = rotationMatrix(10 * time.time())
-    glUniformMatrix4fv(rotation_loc, 1, GL_FALSE, pyrr.matrix44.multiply( rot_x,rot_y))
+    rot_x =rotationMatrix(10 * time.time()) # rotation along axis (0, 0.6, 0.4)
+    rot_y = rotationMatrix(10 * time.time()) # rotation along axis (0, 0.6, 0.4)
+    glUniformMatrix4fv(rotation, 1, GL_FALSE, pyrr.matrix44.multiply( rot_x,rot_y))
     glDrawArrays(GL_TRIANGLES, 0, 36)
 
 

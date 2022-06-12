@@ -20,8 +20,8 @@ def init():
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     glClearColor(0.0, 0.0, 0.0, 0.1)
     glViewport(0, 0, 600, 500)
-    vertex_shader_content = getFileContent("triangle.vertex.shader")
-    fragment_shader_content = getFileContent("triangle.fragment.shader")
+    vertex_shader_content = getFileContent("cube.vertex.shader")
+    fragment_shader_content = getFileContent("cube.fragment.shader")
 
     vertex_shader = compileShader(vertex_shader_content, GL_VERTEX_SHADER)
     fragment_shader = compileShader(fragment_shader_content, GL_FRAGMENT_SHADER)

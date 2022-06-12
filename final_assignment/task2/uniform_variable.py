@@ -49,8 +49,10 @@ def init():
         [0.5, 0.5, 0.0, 1.0, 0.0, 0.0],
         [0.5, -0.5, 0.0, 0.0, 1.0, 0.0],
         [-0.5, -0.5, 0.0, 0.0, 0.0, 1.0]], dtype=np.float32)
+
     VAO = glGenVertexArrays(1)
     VBO = glGenBuffers(1)
+
     glBindVertexArray(VAO)
     glBindBuffer(GL_ARRAY_BUFFER, VBO)
     glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
@@ -69,6 +71,7 @@ def draw():
     glClear(GL_COLOR_BUFFER_BIT)
     glUseProgram(program)
     glBindVertexArray(VAO)
+
     rot_x = rotationMatrix(20 * time.time())
     rotateMatLocation = glGetUniformLocation(program, "transform")
     # rotateMat = rotationMatrix(30)

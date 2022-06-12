@@ -20,8 +20,8 @@ def init():
     glClearColor(.30, 0.20, 0.20, 1.0)
     glViewport(0, 0, 500, 500)
     
-    vertexShaderContent = getFileContents("triangle.vertex.shader")
-    fragmentShaderContent = getFileContents("triangle.fragment.shader")
+    vertexShaderContent = getFileContents("cube.vertex.shader")
+    fragmentShaderContent = getFileContents("cube.fragment.shader")
     
     # print(vertexShaderContent)
     # print(fragmentShaderContent)
